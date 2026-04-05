@@ -98,7 +98,7 @@ def picture_image(picture_id):
     picture = Picture.query.get_or_404(picture_id)
     return Response(picture.image_data, mimetype=picture.image_mime)
 
-@app.route("/pictures/<int:picture_id>/delete")
+@app.route("/pictures/<int:picture_id>/delete", methods=["POST"])
 def delete_picture(picture_id):
     """pictures配下のデータを選択してDBから削除する"""
     picture = Picture.query.get_or_404(picture_id)
@@ -108,7 +108,7 @@ def delete_picture(picture_id):
         db.session.delete(picture)
         db.session.commit()
     except Exception:
-        db.session.rollback
+        db.session.rollback()
         app.logger.exception("削除に失敗しました。")
         abort(500)
     
