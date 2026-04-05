@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ status_code }} エラー</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="error-layout">
+        <section class="error-card">
+            <h1 class="error-code">{{ status_code }}</h1>
+            <h2 class="error-title">{{ error_name }}</h2>
+            <p class="error-text">{{ description }}</p>
+            <a class="button" href="{{ url_for('main_page') }}">一覧に戻る</a>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>オリジナルギャラリー</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="page">
+        <header class="page-header">
+            <h1 class="page-title">オリジナルギャラリー</h1>
+            <p class="page-subtitle">登録した画像を一覧で確認できます。</p>
+        </header>
+
+        <div class="actions">
+            <a class="button" href="{{ url_for('create_picture') }}">画像を登録</a>
+
+            <form class="inline-form" method="post" action="{{ url_for('delete_all_pictures') }}">
+                <button class="button-danger" type="submit">全件削除</button>
+            </form>
+        </div>
+
+        {% if pictures %}
+            <section class="gallery-list">
+                {% for picture in pictures %}
+                    <article class="gallery-item">
+                        <a href="{{ url_for('picture_detail', picture_id=picture.id) }}">
+                            <img
+                                class="gallery-thumb"
+                                src="{{ url_for('picture_image', picture_id=picture.id) }}"
+                                alt="{{ picture.title }}"
+                            >
+                        </a>
+
+                        <h2 class="gallery-title">
+                            <a href="{{ url_for('picture_detail', picture_id=picture.id) }}">
+                                {{ picture.title }}
+                            </a>
+                        </h2>
+
+                        <p class="gallery-meta">登録日時: {{ picture.created_at }}</p>
+                    </article>
+                {% endfor %}
+            </section>
+        {% else %}
+            <div class="empty-state">
+                まだ画像が登録されていません。
+            </div>
+        {% endif %}
+    </main>
+</body>
+</html>

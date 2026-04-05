@@ -1,0 +1,334 @@
+/* =========================
+   共通設定
+   ========================= */
+
+/* すべての要素で padding / border を含めてサイズ計算する */
+* {
+    box-sizing: border-box;
+}
+
+/* ページ全体の基本見た目を定義する */
+body {
+    margin: 0;
+    font-family: "Yu Gothic UI", "Meiryo", sans-serif;
+    background: #f5f7fb;
+    color: #1f2937;
+    line-height: 1.6;
+}
+
+/* リンクの基本色を設定する */
+a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+/* ホバー時だけ下線を表示する */
+a:hover {
+    text-decoration: underline;
+}
+
+/* 画像が親要素からはみ出さないようにする */
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/* =========================
+   ページ全体レイアウト
+   ========================= */
+
+/* 各ページのメインコンテンツ幅と余白を統一する */
+.page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px 48px;
+}
+
+/* ページ上部の見出しエリア */
+.page-header {
+    margin-bottom: 24px;
+}
+
+/* ページタイトル */
+.page-title {
+    margin: 0 0 8px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* ページタイトル下の補足説明 */
+.page-subtitle {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* =========================
+   ボタン・操作エリア
+   ========================= */
+
+/* ボタンやリンクボタンを並べる領域 */
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+/* ボタン共通デザイン
+   button要素と a.button の両方に適用する */
+.button,
+button {
+    appearance: none;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #2563eb;
+    color: #ffffff;
+    transition: opacity 0.2s ease;
+}
+
+/* ホバー時は少しだけ薄くする */
+.button:hover,
+button:hover {
+    opacity: 0.9;
+    text-decoration: none;
+}
+
+/* 戻るなど、目立たせすぎないボタン */
+.button-secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+/* 削除系の危険操作用ボタン */
+.button-danger {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+/* form を横並びボタン群の中で使いやすくする */
+.inline-form {
+    display: inline-block;
+    margin: 0;
+}
+
+/* =========================
+   カード共通
+   ========================= */
+
+/* 白背景のカードUIを共通化する */
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+/* データが存在しないときの表示領域 */
+.empty-state {
+    padding: 28px 20px;
+    text-align: center;
+    color: #6b7280;
+    background: #ffffff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+}
+
+/* =========================
+   一覧画面（ギャラリー）
+   ========================= */
+
+/* 一覧をカード状に自動折り返しで表示する */
+.gallery-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+/* 各画像カード */
+.gallery-item {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+/* 一覧上で表示するサムネイル画像
+   object-fit: cover により縦横比を保ちながら枠を埋める */
+.gallery-thumb {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    background: #e5e7eb;
+    margin-bottom: 12px;
+}
+
+/* 一覧カード内のタイトル */
+.gallery-title {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: #111827;
+}
+
+/* 一覧カード内の登録日時などの補足情報 */
+.gallery-meta {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* =========================
+   登録フォーム
+   ========================= */
+
+/* 登録フォーム全体の最大幅を少し狭める */
+.form-card {
+    max-width: 720px;
+}
+
+/* 各入力欄のひとかたまり */
+.form-group {
+    margin-bottom: 18px;
+}
+
+/* ラベルの見た目 */
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+}
+
+/* テキスト入力、テキストエリア、ファイル入力の基本デザイン */
+.form-input,
+.form-textarea,
+.form-file {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    font-size: 14px;
+    color: #111827;
+}
+
+/* 説明文は複数行入力を前提に高さを確保する */
+.form-textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+/* =========================
+   詳細画面
+   ========================= */
+
+/* 詳細画面の各要素を縦方向に並べる */
+.detail-card {
+    display: grid;
+    gap: 24px;
+}
+
+/* 詳細画面のメイン画像 */
+.detail-image {
+    width: 100%;
+    max-width: 640px;
+    border-radius: 16px;
+    background: #e5e7eb;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+/* タイトル・説明文などの情報ブロック */
+.detail-section {
+    display: grid;
+    gap: 12px;
+}
+
+/* 詳細画面の画像タイトル */
+.detail-heading {
+    margin: 0;
+    font-size: 28px;
+    color: #111827;
+}
+
+/* 登録日時などの補足情報 */
+.detail-meta {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* 説明文
+   pre-wrap により改行や連続スペースをある程度保持する */
+.detail-text {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* =========================
+   エラーページ
+   ========================= */
+
+/* エラーページ全体のレイアウト */
+.error-layout {
+    max-width: 720px;
+    margin: 64px auto;
+    padding: 0 20px;
+}
+
+/* エラーページ用の中央カード */
+.error-card {
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 40px 24px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* 404 / 500 などの大きなエラーコード */
+.error-code {
+    margin: 0 0 8px;
+    font-size: 48px;
+    color: #111827;
+}
+
+/* エラー名の表示 */
+.error-title {
+    margin: 0 0 12px;
+    font-size: 22px;
+    color: #374151;
+}
+
+/* エラー説明文 */
+.error-text {
+    margin: 0 0 24px;
+    color: #6b7280;
+}
+
+/* =========================
+   レスポンシブ対応
+   ========================= */
+
+/* 画面幅が狭いときは余白と文字サイズを少し詰める */
+@media (max-width: 640px) {
+    .page {
+        padding: 24px 16px 40px;
+    }
+
+    .page-title {
+        font-size: 26px;
+    }
+
+    .detail-heading {
+        font-size: 24px;
+    }
+}

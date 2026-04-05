@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ picture.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="page">
+        <header class="page-header">
+            <h1 class="page-title">画像詳細</h1>
+            <p class="page-subtitle">登録済み画像の内容を確認できます。</p>
+        </header>
+
+        <section class="card detail-card">
+            <div>
+                <img
+                    class="detail-image"
+                    src="{{ url_for('picture_image', picture_id=picture.id) }}"
+                    alt="{{ picture.title }}"
+                >
+            </div>
+
+            <div class="detail-section">
+                <h2 class="detail-heading">{{ picture.title }}</h2>
+                <p class="detail-meta">登録日時: {{ picture.created_at }}</p>
+                <p class="detail-text">{{ picture.description or '説明文はありません。' }}</p>
+            </div>
+
+            <div class="actions">
+                <form class="inline-form" method="post" action="{{ url_for('delete_picture', picture_id=picture.id) }}">
+                    <button class="button-danger" type="submit">この画像を削除</button>
+                </form>
+
+                <a class="button button-secondary" href="{{ url_for('main_page') }}">一覧に戻る</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
