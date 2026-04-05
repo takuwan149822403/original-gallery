@@ -10,6 +10,9 @@ app = Flask(__name__)
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "instance" / "gallery.db"
 
+# instance フォルダを起動時に必ず作る
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_PATH.as_posix()}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5MB
@@ -155,7 +158,10 @@ def handle_exception(e):
         description="サーバー内部でエラーが発生しました。"
     ), 500
 
-if __name__ == "__main__":
-    with app.app_context():
+# アプリ起動時にDBを作成
+with app.app_context():
         db.create_all()
+
+# アプリを起動
+if __name__ == "__main__":
     app.run(debug=True)
