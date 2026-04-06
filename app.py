@@ -288,21 +288,28 @@ def load_sample_data():
         csv_reader = csv.DictReader(f)
         for row in csv_reader:
             print(f"サンプルデータを挿入中: {row['title']}")
-            # 画像ファイルを読載（CSVファイルの親ディレクトリからの相対参照）
-            img_path = csv_dir / row["data_path"].lstrip(".\\").lstrip("./")
+            # OSに依存しないパスの正規化を行う。CSV内のパスは相対パスで、OSによって
+            # 区切り文字が異なる可能性があるため、両方に対応できるようにする。
+            raw_path = row["data_path"].strip()
+            normalized_path = raw_path.replace("\\", "/").removeprefix("./")
+            img_path = csv_dir / Path(normalized_path)
+
             if not img_path.exists():
+                app.logger.warning(
+                    "サンプル画像が見つかりません: raw=%s resolved=%s",
+                    raw_path,
+                    img_path
+                )
                 continue
 
             with open(img_path, "rb") as img_file:
                 image_data = img_file.read()
 
-            # created_atを解析 (YYYYMMDDformat)
             created_str = row["created_at"]
             created_at = datetime.strptime(created_str, "%Y%m%d").replace(
                 tzinfo=JST
             )
 
-            # updated_atを解析 (Noneの場合はNoneを維持)
             updated_at = None
             if row["updated_at"] and row["updated_at"] != "None":
                 updated_str = row["updated_at"]
@@ -310,7 +317,6 @@ def load_sample_data():
                     tzinfo=JST
                 )
 
-            # Pictureを作成
             picture = Picture(
                 title=row["title"],
                 description=row["description"],
@@ -321,11 +327,8 @@ def load_sample_data():
                 updated_at=updated_at,
             )
 
-            # タグを処理
             if row["tags_input"]:
-                tag_names = [
-                    t.strip() for t in row["tags_input"].split(",") if t.strip()
-                ]
+                tag_names = [t.strip() for t in row["tags_input"].split(",") if t.strip()]
                 for tag_name in tag_names:
                     tag = Tag.query.filter_by(name=tag_name).first()
                     if not tag:
