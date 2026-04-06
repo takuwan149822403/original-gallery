@@ -1,0 +1,5 @@
+title,description,tags_input,created_at,updated_at,data_path
+あさやけ,朝の水面です,"景色,自然,海",20250303,None,.\sample_img\sample01.jpg
+標識,道路標識です,"景色,人口物,車",20231012,20260102,.\sample_img\sample02.jpg
+グリーン企業,SDGsに配慮した素晴らしい会社。2013年設立,"ブラック,残業",20260223,None,.\sample_img\sample03.jpg
+Templeっぽいなにか,AI生成画像,"AI",20190823,20240911,.\sample_img\sample04.jpg

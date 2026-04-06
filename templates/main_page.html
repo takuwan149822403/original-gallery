@@ -39,7 +39,15 @@
                             </a>
                         </h2>
 
-                        <p class="gallery-meta">登録日時: {{ picture.created_at }}</p>
+                        <p class="gallery-meta">登録日時: {{ picture.created_at.strftime('%Y/%m/%d %H:%M:%S') }}</p>
+                        
+                        {% if picture.tags %}
+                        <div class="gallery-tags">
+                            {% for tag in picture.tags %}
+                            <span class="tag" data-color="{{ tag.color }}"><span class="tag-name">{{ tag.name }}</span></span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                     </article>
                 {% endfor %}
             </section>
@@ -49,5 +57,11 @@
             </div>
         {% endif %}
     </main>
+    <script>
+        // data-color 属性から背景色を設定
+        document.querySelectorAll('.tag[data-color]').forEach(tag => {
+            tag.style.backgroundColor = tag.dataset.color;
+        });
+    </script>
 </body>
 </html>

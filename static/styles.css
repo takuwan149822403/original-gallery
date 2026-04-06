@@ -315,6 +315,57 @@ button:hover {
 }
 
 /* =========================
+   タグ
+   ========================= */
+
+/* ギャラリー一覧のタグコンテナ */
+.gallery-tags {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* 詳細画面のタグセクション */
+.detail-tags {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* タグセクションの見出し */
+.tags-heading {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* タグコンテナ */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* タグ要素（背景色は動的に指定） */
+.tag {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    background-color: #808080;
+}
+
+/* タグ内のテキスト */
+.tag-name {
+    color: #ffffff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================
    レスポンシブ対応
    ========================= */
 

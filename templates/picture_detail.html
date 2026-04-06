@@ -24,11 +24,25 @@
 
             <div class="detail-section">
                 <h2 class="detail-heading">{{ picture.title }}</h2>
-                <p class="detail-meta">登録日時: {{ picture.created_at }}</p>
+                <p class="detail-meta">登録日時: {{ picture.created_at.strftime('%Y/%m/%d %H:%M:%S') }}</p>
+                <p class="detail-meta">更新日時: {{ picture.updated_at.strftime('%Y/%m/%d %H:%M:%S') if picture.updated_at else '未更新' }}</p>
                 <p class="detail-text">{{ picture.description or '説明文はありません。' }}</p>
+                
+                {% if picture.tags %}
+                <div class="detail-tags">
+                    <h3 class="tags-heading">タグ</h3>
+                    <div class="tags-container">
+                        {% for tag in picture.tags %}
+                        <span class="tag" data-color="{{ tag.color }}"><span class="tag-name">{{ tag.name }}</span></span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
             <div class="actions">
+                <a class="button" href="{{ url_for('update_picture', picture_id=picture.id) }}">更新する</a>
+
                 <form class="inline-form" method="post" action="{{ url_for('delete_picture', picture_id=picture.id) }}">
                     <button class="button-danger" type="submit">この画像を削除</button>
                 </form>
@@ -37,5 +51,11 @@
             </div>
         </section>
     </main>
+    <script>
+        // data-color 属性から背景色を設定
+        document.querySelectorAll('.tag[data-color]').forEach(tag => {
+            tag.style.backgroundColor = tag.dataset.color;
+        });
+    </script>
 </body>
 </html>
