@@ -1,0 +1,125 @@
+name: バグ報告
+description: 不具合、例外、表示崩れ、想定外挙動を報告する
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ありがとうございます。再現しやすいように、できるだけ具体的に記入してください。
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: 何が起きたかを一文で書いてください。
+      placeholder: 画像更新時にタグを追加すると500エラーになる
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target_area
+    attributes:
+      label: 対象機能
+      description: 不具合が起きた機能を選択してください。
+      options:
+        - 一覧画面
+        - 画像登録
+        - 画像詳細
+        - 画像更新
+        - 画像削除
+        - 全件削除
+        - 検索
+        - タグ
+        - エラーページ
+        - その他
+    validations:
+      required: true
+
+  - type: input
+    id: route
+    attributes:
+      label: 対象URL / ルート
+      description: 分かる範囲で記入してください。
+      placeholder: /, /pictures/new, /pictures/1, /pictures/1/update
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      description: 箇条書きで再現手順を書いてください。
+      placeholder: |
+        1. 一覧画面を開く
+        2. 「画像を登録」を押す
+        3. タイトルと画像を入力する
+        4. 登録を押す
+        5. 500エラーになる
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待する結果
+      placeholder: 登録完了後に詳細画面へ遷移する
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 実際の結果
+      placeholder: 500エラー画面が表示される / ボタンが反応しない / 画像が表示されない
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: エラーメッセージ / ログ
+      description: スタックトレース、ブラウザコンソール、画面メッセージなど
+      render: shell
+      placeholder: |
+        Traceback (most recent call last):
+        ...
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: スクリーンショット
+      description: 必要なら画像を貼ってください。
+      placeholder: 画像をドラッグ&ドロップ
+
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: 発生頻度
+      options:
+        - 毎回発生する
+        - ときどき発生する
+        - 1回だけ発生した
+        - 不明
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: 実行環境
+      description: OS / Python / ブラウザ など
+      placeholder: Windows 11 / Python 3.12 / Edge など
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 確認事項
+      options:
+        - label: 既存の Issue と重複していないことを確認した
+          required: true
+        - label: 再現手順をできるだけ具体的に書いた
+          required: true
