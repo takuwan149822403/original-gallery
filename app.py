@@ -5,6 +5,7 @@ from pathlib import Path
 from werkzeug.exceptions import HTTPException
 from pytz import timezone
 import csv
+import random
 
 # 定義(サンプルデータ挿入関数呼び出し済フラグ)
 sample_data_loaded = False
@@ -12,6 +13,16 @@ sample_data_loaded = False
 # 定義
 app = Flask(__name__)
 JST = timezone('Asia/Tokyo')
+
+TAG_COLOR_OPTIONS = {
+    "#808080": "グレー",
+    "#3B82F6": "ブルー",
+    "#10B981": "グリーン",
+    "#F59E0B": "オレンジ",
+    "#EF4444": "レッド",
+    "#8B5CF6": "パープル",
+    "#EC4899": "ピンク",
+}
 
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "instance" / "gallery.db"
@@ -73,11 +84,42 @@ class Picture(db.Model):
     tags = db.relationship("Tag", secondary=picture_tag, backref="pictures", cascade="all, delete")
 
 
+
 @app.route("/")
 def main_page():
-    """メインページを表示し、登録済み画像を新しい順で一覧表示する。"""
-    pictures = Picture.query.order_by(Picture.created_at.desc()).all()
-    return render_template("main_page.html", pictures=pictures)
+    """登録済み画像の一覧を表示し、条件に応じて検索結果を返す。"""
+    search_keyword = request.args.get("keyword", "").strip()
+
+    # search_keywordが空の時は全件を返す
+    if not search_keyword:
+        pictures = Picture.query.order_by(Picture.title.desc(), Picture.updated_at.desc()).all()
+        return render_template(
+            "main_page.html",
+            pictures=pictures,
+            search_keyword=search_keyword
+        )
+
+    query = Picture.query
+
+    # タイトル、説明文、タグ名のいずれかに検索キーワードが部分一致するものを検索する
+    if search_keyword:
+        query = query.outerjoin(Picture.tags).filter(
+            db.or_(
+                Picture.title.ilike(f"%{search_keyword}%"),
+                Picture.description.ilike(f"%{search_keyword}%"),
+                Tag.name.ilike(f"%{search_keyword}%")
+            )
+        )
+    
+    # タイトルの降順で表示する。同じタイトルがあれば更新日時の降順で表示する。
+    query = query.order_by(Picture.title.desc(), Picture.updated_at.desc())
+    pictures = query.distinct().all()
+
+    return render_template(
+        "main_page.html",
+        pictures=pictures,
+        search_keyword=search_keyword
+    )
 
 
 @app.route("/pictures/new", methods=["GET", "POST"])
@@ -104,15 +146,32 @@ def create_picture():
             image_filename=image_file.filename
         )
         
-        # タグを処理（カンマ区切り）
-        if tags_input:
-            tag_names = [t.strip() for t in tags_input.split(",") if t.strip()]
-            for tag_name in tag_names:
-                tag = Tag.query.filter_by(name=tag_name).first()
-                if not tag:
-                    tag = Tag(name=tag_name)
-                    db.session.add(tag)
-                picture.tags.append(tag)
+        # タグを処理
+        # タグ名と色の配列の長さが0でなければ、タグの入力があるとみなす
+        if (len(request.form.getlist("tag_name[]")) > 0 and len(request.form.getlist("tag_color[]")) > 0):
+            # 入力されたタグ名と色の数が異なっていた場合は入力エラー
+            if len(request.form.getlist("tag_name[]")) != len(request.form.getlist("tag_color[]")):
+                abort(400, description="タグの名前と色の数が一致していません。")
+            # タグ名と色を組み合わせて、タグのリストを作成する
+            tag_color_dict = {}
+            for tag_name, tag_color in zip(request.form.getlist("tag_name[]"), request.form.getlist("tag_color[]")):
+                tag_color_dict[tag_name] = tag_color
+        else:
+            tag_color_dict = None
+
+        # タグの入力がある場合は、入力されたタグ名と色をもとにタグを作成する
+        if tag_color_dict is not None:
+            # 入力されたタグ名と色の組み合わせをもとに、タグを新規作成する
+            for tag_name, tag_color in tag_color_dict.items():
+                # タグ名と色が空でない場合のみ処理
+                if tag_name.strip() and tag_color.strip():
+                    tag = Tag.query.filter_by(name=tag_name).first()
+                    if not tag:
+                        tag = Tag(name=tag_name, color=tag_color)
+                        db.session.add(tag)
+                    else:
+                        tag.color = tag_color  # 既存のタグの色を更新する
+                    picture.tags.append(tag)
         
         # DBに登録(失敗したらロールバック)
         try:
@@ -125,7 +184,7 @@ def create_picture():
 
         return redirect(url_for("picture_detail", picture_id=picture.id))
 
-    return render_template("register.html")
+    return render_template("register.html", tag_color_options=TAG_COLOR_OPTIONS)
 
 
 @app.route("/pictures/<int:picture_id>")
@@ -192,13 +251,20 @@ def update_picture(picture_id):
             description = None
 
         # タグは一つでも入っていれば保持する(追加可否の判定はfor文で行うため)
-        if request.form.get("tags", "").strip() != "":
-            tags_input = request.form.get("tags", "").strip()
+        # タグ名と色の配列の長さが0でなければ、タグの入力があるとみなす
+        if (len(request.form.getlist("tag_name[]")) > 0 and len(request.form.getlist("tag_color[]")) > 0):
+                # 入力されたタグ名と色の数が異なっていた場合は入力エラー
+                if len(request.form.getlist("tag_name[]")) != len(request.form.getlist("tag_color[]")):
+                    abort(400, description="タグの名前と色の数が一致していません。")
+                # タグ名と色を組み合わせて、タグのリストを作成する
+                tag_color_dict = {}
+                for tag_name, tag_color in zip(request.form.getlist("tag_name[]"), request.form.getlist("tag_color[]")):
+                    tag_color_dict[tag_name] = tag_color
         else:
-            tags_input = None
+            tag_color_dict = None
 
         # ページから何も入力されていない場合は400を返す
-        if not title and not description and not tags_input:
+        if not title and not description and not tag_color_dict:
             abort(400, description="少なくとも一つのフィールドを入力してください。")
 
         # タイトルと説明文を更新
@@ -208,17 +274,21 @@ def update_picture(picture_id):
             picture.description = description
 
         # タグを処理
-        # タグをカンマ区切りで分割してリスト化
-        if tags_input is not None:
-            tag_names = [t.strip() for t in tags_input.split(",") if t.strip()]
+        # タグの入力がある場合は、入力されたタグ名と色をもとにタグを更新する
+        if tag_color_dict is not None:
             new_tags = []
-            for tag_name in tag_names:
-                # タグが既に存在するか確認し、なければ新規作成してDBに追加
-                tag = Tag.query.filter_by(name=tag_name).first()
-                if not tag:
-                    tag = Tag(name=tag_name)
-                    db.session.add(tag)
-                new_tags.append(tag)
+            # 入力されたタグ名と色の組み合わせをもとに、タグを新規作成または既存のタグを更新する
+            for tag_name, tag_color in tag_color_dict.items():
+                # タグ名と色が空でない場合のみ処理
+                if tag_name.strip() and tag_color.strip():
+                    # タグがある場合はスキップするのではなく、色を更新する。タグがない場合は新規作成する。
+                    tag = Tag.query.filter_by(name=tag_name).first()
+                    if not tag:
+                        tag = Tag(name=tag_name, color=tag_color)
+                        db.session.add(tag)
+                    else:
+                        tag.color = tag_color  # 既存のタグの色を更新する
+                    new_tags.append(tag)
 
             # 既存のタグを新しいタグリストに置き換える
             picture.tags = new_tags
@@ -232,7 +302,9 @@ def update_picture(picture_id):
 
         return redirect(url_for("picture_detail", picture_id=picture.id))
 
-    return render_template("update.html", picture=picture)
+    return render_template("update.html",
+                            picture=picture,
+                            tag_color_options=TAG_COLOR_OPTIONS)
 
 @app.errorhandler(HTTPException)
 def handle_http_exception(e):
@@ -332,7 +404,8 @@ def load_sample_data():
                 for tag_name in tag_names:
                     tag = Tag.query.filter_by(name=tag_name).first()
                     if not tag:
-                        tag = Tag(name=tag_name)
+                        #タグの色はランダムに設定
+                        tag = Tag(name=tag_name, color=random.choice(list(TAG_COLOR_OPTIONS.keys())))
                         db.session.add(tag)
                     picture.tags.append(tag)
 
