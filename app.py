@@ -148,9 +148,9 @@ def create_picture():
         
         # タグを処理
         # タグ名と色の配列の長さが0でなければ、タグの入力があるとみなす
-        if (len(request.form.getlist("tag_name[]")) > 0 and len(request.form.getlist("tag_color[]")) > 0):
+        if (len(list(filter(None, request.form.getlist("tag_name[]")))) > 0 or len(list(filter(None, request.form.getlist("tag_color[]")))) > 0):
             # 入力されたタグ名と色の数が異なっていた場合は入力エラー
-            if len(request.form.getlist("tag_name[]")) != len(request.form.getlist("tag_color[]")):
+            if len(list(filter(None, request.form.getlist("tag_name[]")))) != len(list(filter(None, request.form.getlist("tag_color[]")))):
                 abort(400, description="タグの名前と色の数が一致していません。")
             # タグ名と色を組み合わせて、タグのリストを作成する
             tag_color_dict = {}
@@ -252,9 +252,9 @@ def update_picture(picture_id):
 
         # タグは一つでも入っていれば保持する(追加可否の判定はfor文で行うため)
         # タグ名と色の配列の長さが0でなければ、タグの入力があるとみなす
-        if (len(request.form.getlist("tag_name[]")) > 0 and len(request.form.getlist("tag_color[]")) > 0):
+        if (len(list(filter(None, request.form.getlist("tag_name[]")))) > 0 or len(list(filter(None, request.form.getlist("tag_color[]")))) > 0):
                 # 入力されたタグ名と色の数が異なっていた場合は入力エラー
-                if len(request.form.getlist("tag_name[]")) != len(request.form.getlist("tag_color[]")):
+                if len(list(filter(None, request.form.getlist("tag_name[]")))) != len(list(filter(None, request.form.getlist("tag_color[]")))):
                     abort(400, description="タグの名前と色の数が一致していません。")
                 # タグ名と色を組み合わせて、タグのリストを作成する
                 tag_color_dict = {}
