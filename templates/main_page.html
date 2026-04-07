@@ -13,12 +13,40 @@
             <p class="page-subtitle">登録した画像を一覧で確認できます。</p>
         </header>
 
+        <section class="search-section">
+            <form class="search-form" method="get" action="{{ url_for('main_page') }}">
+                <div class="search-row">
+                    <div class="search-group">
+                        <label class="search-label" for="keyword">キーワード検索</label>
+                        <input
+                            class="search-input"
+                            id="keyword"
+                            type="text"
+                            name="keyword"
+                            value="{{ search_keyword or '' }}"
+                            placeholder="タイトルや説明文などキーワードを入力"
+                        >
+                    </div>
+                </div>
+
+                <div class="search-actions">
+                    <button type="submit">検索</button>
+                    <a class="button button-secondary" href="{{ url_for('main_page') }}">クリア</a>
+                </div>
+            </form>
+        </section>
+
         <div class="actions">
             <a class="button" href="{{ url_for('create_picture') }}">画像を登録</a>
 
             <form class="inline-form" method="post" action="{{ url_for('delete_all_pictures') }}">
                 <button class="button-danger" type="submit">全件削除</button>
             </form>
+        </div>
+
+        <div class="gallery-count">
+            <p>検索キーワード : "{{ search_keyword }}"</p>
+            <p>全 {{ pictures|length }} 件</p>
         </div>
 
         {% if pictures %}

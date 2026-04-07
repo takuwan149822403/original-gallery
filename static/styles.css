@@ -65,6 +65,69 @@ img {
 }
 
 /* =========================
+   検索フォーム
+   ========================= */
+
+/* 検索エリア全体
+   一覧画面のサブタイトル直下に中央寄せで配置する */
+.search-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+/* 検索フォーム本体 */
+.search-form {
+    width: 100%;
+    max-width: 820px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+/* 入力欄群を横並びにする */
+.search-row {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* 各検索項目のまとまり */
+.search-group {
+    display: grid;
+    gap: 8px;
+}
+
+/* 検索ラベル */
+.search-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+}
+
+/* 検索入力欄 */
+.search-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    font-size: 14px;
+    color: #111827;
+}
+
+/* 検索ボタンエリア */
+.search-actions {
+    display: flex;
+    justify-content: left;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* =========================
    ボタン・操作エリア
    ========================= */
 
@@ -183,6 +246,12 @@ button:hover {
     margin: 0;
     font-size: 13px;
     color: #6b7280;
+}
+
+.gallery-count {
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: #374151;
 }
 
 /* =========================
@@ -366,6 +435,27 @@ button:hover {
 }
 
 /* =========================
+   タグ編集
+   ========================= */
+
+.tag-edit-list {
+    display: grid;
+    gap: 12px;
+}
+
+.tag-edit-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+}
+
+.form-help-text {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* =========================
    レスポンシブ対応
    ========================= */
 
@@ -381,5 +471,13 @@ button:hover {
 
     .detail-heading {
         font-size: 24px;
+    }
+
+    .search-row {
+        grid-template-columns: 1fr;
+    }
+
+    .tag-edit-row {
+        grid-template-columns: 1fr;
     }
 }
